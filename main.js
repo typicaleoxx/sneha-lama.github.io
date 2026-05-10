@@ -1064,7 +1064,7 @@ function initMobileSidebar() {
   }, { passive: true });
 }
 
-   VIRTUAL KEYBOARD — keep terminal input visible on mobile
+// VIRTUAL KEYBOARD
 function initVirtualKeyboard() {
   if (!window.visualViewport) return;
 
@@ -1090,8 +1090,7 @@ function initVirtualKeyboard() {
   });
 }
 
-   KEYBOARD SHORTCUTS
-     */
+// KEYBOARD SHORTCUTS
 function initKeyboard() {
   document.addEventListener('keydown', (e) => {
     const ctrl = e.ctrlKey || e.metaKey;
@@ -1289,7 +1288,7 @@ function initTerminalControls() {
   document.addEventListener('touchend', () => { dragging = false; });
 }
 
-   MATRIX RAIN EASTER EGG
+// MATRIX RAIN EASTER EGG
 function runMatrixRain() {
   const existing = document.getElementById('matrix-canvas');
   if (existing) return;
@@ -1328,7 +1327,7 @@ function runMatrixRain() {
   }, 5000);
 }
 
-   KONAMI CODE
+// KONAMI CODE
 function initKonamiCode() {
   const sequence = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
   let pos = 0;
@@ -1345,7 +1344,7 @@ function initKonamiCode() {
   });
 }
 
-   TRAFFIC LIGHTS
+// TRAFFIC LIGHTS
 function initTrafficLights() {
   document.querySelector('.tl-red')?.addEventListener('click', () => {
     if (state.activeTabId) {
@@ -1384,7 +1383,7 @@ function initTrafficLights() {
   });
 }
 
-   TYPEWRITER EMPTY STATE
+// TYPEWRITER EMPTY STATE
 function initTypewriterSubtitle() {
   const el = document.querySelector('.empty-sub');
   if (!el) return;
@@ -1409,8 +1408,7 @@ function initTypewriterSubtitle() {
   }, 3200);
 }
 
-   BOOT SEQUENCE
-     */
+// BOOT SEQUENCE
 function boot() {
   applyTheme(state.theme);
 
