@@ -80,6 +80,111 @@
 }
 
 /* ================================================================
+   MONOKAI THEME
+   ================================================================ */
+[data-theme="monokai"] {
+  --bg-editor:       #272822;
+  --bg-sidebar:      #1e1f1c;
+  --bg-tab-inactive: #1e1f1c;
+  --bg-tab-active:   #272822;
+  --bg-titlebar:     #1a1b19;
+  --bg-activitybar:  #1a1b19;
+  --bg-statusbar:    #75715e;
+  --bg-input:        #3e3d32;
+  --bg-hover:        #3e3d32;
+  --bg-selected:     #49483e;
+  --bg-palette:      #1e1f1c;
+  --bg-overlay:      rgba(0,0,0,0.6);
+
+  --accent-blue:     #66d9e8;
+  --accent-green:    #a6e22e;
+  --accent-orange:   #fd971f;
+  --accent-yellow:   #e6db74;
+  --accent-purple:   #ae81ff;
+  --accent-red:      #f92672;
+  --accent-teal:     #a6e22e;
+
+  --text-primary:    #f8f8f2;
+  --text-muted:      #75715e;
+  --text-white:      #f8f8f2;
+  --text-dim:        #49483e;
+
+  --border:          #49483e;
+  --border-subtle:   #3e3d32;
+  --selection-bg:    #49483e;
+}
+
+/* ================================================================
+   DRACULA THEME
+   ================================================================ */
+[data-theme="dracula"] {
+  --bg-editor:       #282a36;
+  --bg-sidebar:      #21222c;
+  --bg-tab-inactive: #21222c;
+  --bg-tab-active:   #282a36;
+  --bg-titlebar:     #191a21;
+  --bg-activitybar:  #191a21;
+  --bg-statusbar:    #6272a4;
+  --bg-input:        #44475a;
+  --bg-hover:        #44475a;
+  --bg-selected:     #44475a;
+  --bg-palette:      #21222c;
+  --bg-overlay:      rgba(0,0,0,0.6);
+
+  --accent-blue:     #8be9fd;
+  --accent-green:    #50fa7b;
+  --accent-orange:   #ffb86c;
+  --accent-yellow:   #f1fa8c;
+  --accent-purple:   #bd93f9;
+  --accent-red:      #ff5555;
+  --accent-teal:     #50fa7b;
+
+  --text-primary:    #f8f8f2;
+  --text-muted:      #6272a4;
+  --text-white:      #f8f8f2;
+  --text-dim:        #44475a;
+
+  --border:          #44475a;
+  --border-subtle:   #383a4a;
+  --selection-bg:    #44475a;
+}
+
+/* ================================================================
+   NORD THEME
+   ================================================================ */
+[data-theme="nord"] {
+  --bg-editor:       #2e3440;
+  --bg-sidebar:      #252b36;
+  --bg-tab-inactive: #252b36;
+  --bg-tab-active:   #2e3440;
+  --bg-titlebar:     #1f242e;
+  --bg-activitybar:  #1f242e;
+  --bg-statusbar:    #5e81ac;
+  --bg-input:        #3b4252;
+  --bg-hover:        #3b4252;
+  --bg-selected:     #434c5e;
+  --bg-palette:      #252b36;
+  --bg-overlay:      rgba(0,0,0,0.55);
+
+  --accent-blue:     #81a1c1;
+  --accent-green:    #a3be8c;
+  --accent-orange:   #d08770;
+  --accent-yellow:   #ebcb8b;
+  --accent-purple:   #b48ead;
+  --accent-red:      #bf616a;
+  --accent-teal:     #88c0d0;
+
+  --text-primary:    #eceff4;
+  --text-muted:      #7b88a1;
+  --text-white:      #eceff4;
+  --text-dim:        #4c566a;
+
+  --border:          #4c566a;
+  --border-subtle:   #3b4252;
+  --selection-bg:    #434c5e;
+}
+
+/* ================================================================
    RESET & BASE
    ================================================================ */
 *, *::before, *::after {
@@ -90,12 +195,15 @@
 
 html, body {
   height: 100%;
+  height: 100dvh;
   overflow: hidden;
   font-family: var(--font-ui);
   font-size: var(--ui-size);
   background: #000;
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 a { color: inherit; text-decoration: none; }
@@ -159,8 +267,10 @@ svg { display: block; flex-shrink: 0; }
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh;
   opacity: 0;
   transition: opacity 0.4s ease;
+  overflow: hidden;
 }
 
 .vscode.visible {
@@ -196,10 +306,24 @@ svg { display: block; flex-shrink: 0; }
   height: 12px;
   border-radius: 50%;
   display: inline-block;
+  cursor: pointer;
+  transition: transform 0.12s ease, filter 0.12s ease;
 }
+.tl:hover { transform: scale(1.25); filter: brightness(1.2); }
 .tl-red    { background: #ff5f57; }
 .tl-yellow { background: #ffbd2e; }
 .tl-green  { background: #28ca41; }
+
+/* smooth theme switching */
+.theme-transitioning,
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
+  transition:
+    background-color 0.22s ease,
+    border-color 0.22s ease,
+    color 0.12s ease !important;
+}
 
 .titlebar-text {
   font-size: 12px;
@@ -219,6 +343,26 @@ svg { display: block; flex-shrink: 0; }
 }
 
 .mobile-menu-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.mobile-palette-btn {
+  display: none;
+  position: absolute;
+  right: 46px;
+  color: var(--text-muted);
+  padding: 4px;
+  border-radius: 4px;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 32px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.mobile-palette-btn:hover,
+.mobile-palette-btn:active {
   color: var(--text-primary);
   background: var(--bg-hover);
 }
@@ -1037,6 +1181,26 @@ kbd {
 .form-status.error   { color: var(--accent-red); }
 
 /* ================================================================
+   TABLE SCROLL WRAPPER (responsive tables)
+   ================================================================ */
+.table-scroll-wrap {
+  overflow-x: auto;
+  margin: 0.8em 0;
+  border-radius: 4px;
+}
+
+.table-scroll-wrap table {
+  margin: 0;
+  min-width: 100%;
+}
+
+/* ================================================================
+   EMPTY STATE MOBILE/DESKTOP HINTS
+   ================================================================ */
+.mobile-hint { display: none; }
+.desktop-hint { display: flex; }
+
+/* ================================================================
    STATUS BAR
    ================================================================ */
 .statusbar {
@@ -1431,6 +1595,11 @@ kbd {
   flex-shrink: 0;
 }
 
+.problem-severity.info {
+  color: var(--accent-blue);
+  flex-shrink: 0;
+}
+
 .problem-source {
   color: var(--text-muted);
   font-size: 11px;
@@ -1468,6 +1637,68 @@ kbd {
   animation: toast-in 0.2s ease;
   max-width: 280px;
 }
+
+/* ================================================================
+   COPY-TO-CLIPBOARD BUTTON (code blocks)
+   ================================================================ */
+.code-copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 36px;
+  font-size: 11px;
+  font-family: var(--font-ui);
+  color: var(--text-dim);
+  background: var(--bg-selected);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 2px 8px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s, background 0.15s;
+  z-index: 2;
+}
+
+.editor-content pre:hover .code-copy-btn,
+.code-copy-btn:focus {
+  opacity: 1;
+}
+
+.code-copy-btn.copied {
+  color: var(--accent-green);
+  border-color: var(--accent-green);
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .code-copy-btn { opacity: 1; right: 8px; top: 6px; }
+}
+
+/* ================================================================
+   MATRIX RAIN EASTER EGG
+   ================================================================ */
+#matrix-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.8s ease;
+}
+#matrix-canvas.fading { opacity: 0; }
+
+/* ================================================================
+   EMPTY STATE — TYPEWRITER SUBTITLE
+   ================================================================ */
+.empty-sub {
+  min-height: 1.4em;
+  transition: opacity 0.3s ease;
+}
+.empty-sub.fading-out { opacity: 0; }
+
+/* ================================================================
+   STATUS BAR — WORD COUNT / READ TIME
+   ================================================================ */
+.sb-wordcount { display: flex; }
 
 /* ================================================================
    GIT EASTER EGG (sidebar panel)
@@ -1612,11 +1843,13 @@ kbd {
   background: rgba(0,0,0,0.55);
   z-index: 299;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.2s ease;
 }
 
 .sidebar-backdrop.visible {
   opacity: 1;
+  pointer-events: auto;
 }
 
 /* ================================================================
@@ -1626,13 +1859,15 @@ kbd {
   :root {
     --activitybar-w: 0px;
     --sidebar-w: 280px;
-    --tab-h: 38px;
+    --tab-h: 40px;
   }
 
   .activitybar { display: none; }
   .resize-handle { display: none; }
   .mobile-menu-btn { display: flex; }
+  .mobile-palette-btn { display: flex; }
   .sb-clock { display: none; }
+  .sb-encoding { display: none; }
   .minimap { display: none; }
 
   /* sidebar slides in as a drawer */
@@ -1658,9 +1893,10 @@ kbd {
     display: block;
   }
 
-  /* terminal full width */
+  /* terminal full width, keyboard-aware */
   .terminal-panel {
     left: 0;
+    max-height: 60vh;
   }
 
   .problems-panel {
@@ -1672,44 +1908,191 @@ kbd {
   /* title bar */
   .titlebar-text {
     font-size: 11px;
-    max-width: 52vw;
+    max-width: 46vw;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  /* command palette */
+  /* command palette — near fullscreen on mobile */
   .palette-box {
-    top: 8%;
-    width: 94vw;
+    top: 4%;
+    width: 96vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .palette-results {
+    max-height: 60vh;
+  }
+
+  .palette-input {
+    height: 50px;
+    font-size: 16px; /* prevents iOS zoom on focus */
   }
 
   /* contact form */
   .contact-form { max-width: 100%; }
 
+  /* form inputs — prevent iOS zoom */
+  .form-row input,
+  .form-row textarea {
+    font-size: 16px;
+  }
+
   /* bigger tap targets on file tree */
   .tree-row {
-    height: 30px;
+    height: 36px;
     font-size: 14px;
   }
 
-  /* bigger tabs */
+  /* tabs — always show close button on touch */
   .tab {
-    min-width: 80px;
+    min-width: 90px;
     padding: 0 8px 0 10px;
   }
 
-  /* status bar — hide less important items */
-  .sb-encoding { display: none; }
+  .tab-close {
+    opacity: 1;
+    width: 22px;
+    height: 22px;
+  }
+
+  /* gutter — narrower on mobile */
+  .gutter {
+    width: 36px;
+    font-size: 11px;
+  }
+
+  .gutter-line {
+    padding-right: 8px;
+  }
 
   /* editor breathing room */
   .editor-content {
-    padding: 12px 14px 80px 12px;
+    padding: 12px 14px 80px 10px;
+    font-size: 13px;
+  }
+
+  /* pdf toolbar stacks on mobile */
+  .pdf-toolbar {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .pdf-download-btn {
+    min-height: 36px;
+    padding: 6px 14px;
     font-size: 13px;
   }
 
   /* empty state */
   .empty-name { font-size: 18px; }
-  .empty-hints { gap: 12px; }
+  .empty-hints { gap: 14px; }
   .empty-hint { font-size: 13px; }
+  .desktop-hint { display: none; }
+  .mobile-hint { display: flex; }
+
+  /* status bar — ootw text hidden, keep dot */
+  .ootw-text { display: none; }
+
+  /* terminal input — prevent iOS zoom */
+  .terminal-input {
+    font-size: 16px;
+  }
+
+  /* toast — center on mobile */
+  .toast {
+    left: 16px;
+    right: 16px;
+    max-width: none;
+    text-align: center;
+  }
+
+  /* safe area padding for notched phones */
+  .statusbar {
+    padding-left: max(6px, env(safe-area-inset-left));
+    padding-right: max(6px, env(safe-area-inset-right));
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .sidebar {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .terminal-panel {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* ================================================================
+   RESPONSIVE — SMALL PHONES (< 430px)
+   ================================================================ */
+@media (max-width: 430px) {
+  :root {
+    --sidebar-w: 260px;
+  }
+
+  .gutter { display: none; }
+
+  .editor-content {
+    padding: 10px 12px 80px;
+    font-size: 12px;
+  }
+
+  .tab {
+    min-width: 72px;
+    padding: 0 6px 0 8px;
+  }
+
+  .tab-name { font-size: 12px; }
+
+  .titlebar-text {
+    max-width: 36vw;
+  }
+
+  .sb-filetype { display: none; }
+
+  .palette-input { height: 48px; }
+
+  .empty-logo { font-size: 36px; }
+  .empty-name { font-size: 16px; }
+}
+
+/* ================================================================
+   RESPONSIVE — LANDSCAPE PHONES (short viewport)
+   ================================================================ */
+@media (max-height: 500px) and (max-width: 900px) {
+  :root {
+    --titlebar-h: 26px;
+    --tab-h: 30px;
+    --statusbar-h: 20px;
+    --terminal-h: 150px;
+  }
+
+  .terminal-panel {
+    max-height: 55vh;
+  }
+
+  .editor-empty {
+    padding: 16px 24px;
+    gap: 4px;
+  }
+
+  .empty-logo { font-size: 28px; margin-bottom: 2px; }
+  .empty-name { font-size: 14px; }
+  .empty-sub { font-size: 11px; margin-bottom: 8px; }
+  .empty-hints { gap: 6px; }
+  .empty-hint { font-size: 11px; }
+
+  .palette-box {
+    top: 2%;
+    max-height: 96vh;
+  }
+
+  .palette-results {
+    max-height: 50vh;
+  }
 }

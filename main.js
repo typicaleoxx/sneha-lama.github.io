@@ -59,9 +59,11 @@ function showToast(msg, duration = 2400) {
    THEME
      */
 function applyTheme(theme) {
+  document.documentElement.classList.add('theme-transitioning');
   document.documentElement.setAttribute('data-theme', theme);
   localStorage.setItem('theme', theme);
   state.theme = theme;
+  setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 280);
 }
 
 function toggleTheme() {
@@ -193,6 +195,7 @@ function expandFolder(folderName) {
    TABS
      */
 function openFile(path) {
+  if (window.innerWidth <= 768) closeMobileSidebar();
   const existing = state.tabs.find(t => t.path === path);
   if (existing) {
     switchTab(existing.id);
@@ -304,8 +307,9 @@ function renderMarkdown(text) {
         code += lines[i] + '\n';
         i++;
       }
-      const inner = lang === 'json' ? highlightJSON(code.trimEnd()) : `<span>${esc(code.trimEnd())}</span>`;
-      html += `<pre><span class="code-lang-label">${esc(lang)}</span><code>${inner}</code></pre>`;
+      const trimmed = code.trimEnd();
+      const inner = lang === 'json' ? highlightJSON(trimmed) : esc(trimmed);
+      html += `<pre><span class="code-lang-label">${esc(lang)}</span><button class="code-copy-btn" aria-label="Copy code">Copy</button><code class="language-${esc(lang)}">${inner}</code></pre>`;
       i++;
       continue;
     }
@@ -336,7 +340,7 @@ function renderMarkdown(text) {
     // table — detect header + separator
     if (line.startsWith('|') && lines[i + 1] && /^\|[-| :]+\|/.test(lines[i + 1])) {
       const headers = line.split('|').slice(1, -1);
-      html += '<table><thead><tr>' +
+      html += '<div class="table-scroll-wrap"><table><thead><tr>' +
         headers.map(h => `<th>${inlineMd(h.trim())}</th>`).join('') +
         '</tr></thead><tbody>';
       i += 2;
@@ -345,7 +349,7 @@ function renderMarkdown(text) {
         html += '<tr>' + cells.map(c => `<td>${inlineMd(c.trim())}</td>`).join('') + '</tr>';
         i++;
       }
-      html += '</tbody></table>';
+      html += '</tbody></table></div>';
       continue;
     }
 
@@ -486,11 +490,13 @@ function renderEditor() {
   const gutterEl  = $('gutter');
   const bcrumbEl  = $('breadcrumb');
   const filetypeEl = $('sb-filetype');
+  const wordcountEl = $('sb-wordcount');
 
   if (!state.activeTabId) {
     emptyEl.hidden  = false;
     paneEl.hidden   = true;
     filetypeEl.textContent = '-';
+    if (wordcountEl) wordcountEl.textContent = '';
     return;
   }
 
@@ -519,6 +525,15 @@ function renderEditor() {
 
   const rawContent = FILES[tab.path] || `# ${esc(tab.name)}\n\nContent coming soon.`;
 
+  // word count + read time
+  if (wordcountEl && ext !== 'pdf') {
+    const words = rawContent.trim().split(/\s+/).filter(Boolean).length;
+    const mins = Math.max(1, Math.round(words / 200));
+    wordcountEl.textContent = `${words} words · ${mins} min read`;
+  } else if (wordcountEl) {
+    wordcountEl.textContent = '';
+  }
+
   // render content
   let rendered;
   if (ext === 'json') {
@@ -530,6 +545,33 @@ function renderEditor() {
   }
 
   contentEl.innerHTML = rendered;
+
+  // syntax highlight non-JSON blocks via highlight.js
+  if (typeof hljs !== 'undefined') {
+    contentEl.querySelectorAll('pre code[class^="language-"]').forEach(block => {
+      if (!block.closest('pre')?.querySelector('.json-key')) {
+        hljs.highlightElement(block);
+      }
+    });
+  }
+
+  // wire copy buttons
+  contentEl.querySelectorAll('.code-copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const code = btn.nextElementSibling?.innerText || '';
+      navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = 'Copied ✓';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 1500);
+      }).catch(() => {
+        btn.textContent = 'Error';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+  });
 
   // wire contact form if present
   wireContactForm();
@@ -626,7 +668,7 @@ function showPanel(panel) {
     case 'git':
       header.textContent = 'SOURCE CONTROL';
       tree.innerHTML = `<div class="git-panel"><pre>
-<span class="git-commit-hash">a1b2c3d</span> <span style="color:var(--text-muted)">(HEAD → main)</span>
+<span class="git-commit-hash">a1b2c3d</span> <span style="color:var(--text-muted)">(HEAD -> main)</span>
 <span class="git-author">Sneha Lama</span> &lt;lsneha991@gmail.com&gt;
    finally finished the portfolio at 2am
 
@@ -701,6 +743,7 @@ function renderSkillsPanel(container) {
      */
 function openPalette() {
   state.paletteOpen = true;
+  if (window.innerWidth <= 768) closeMobileSidebar();
   const overlay = $('palette-overlay');
   overlay.hidden = false;
   const input = $('palette-input');
@@ -857,22 +900,52 @@ function runTerminalCommand(raw) {
     return;
   }
 
-  if (cmd === 'open resume' || cmd === 'open resume.pdf') {
-    downloadResume();
-    printTerminal('<span class="t-green">downloading resume.pdf...</span>');
+  if (cmd === 'history') {
+    if (!state.terminalHistory.length) {
+      printTerminal('<span class="t-muted">no history yet</span>');
+    } else {
+      state.terminalHistory.slice().reverse().forEach((h, i) =>
+        printTerminal(`<span class="t-muted">${i + 1}</span>  ${esc(h)}`)
+      );
+    }
     return;
   }
 
-  if (cmd.startsWith('open ')) {
-    const target = cmd.slice(5).trim();
+  if (cmd.startsWith('echo ')) {
+    printTerminal(esc(raw.slice(5)));
+    return;
+  }
+
+  if (cmd === 'download resume swe' || cmd === 'download resume-swe') {
+    downloadResume('Sneha_Lama_SWE.pdf');
+    printTerminal('<span class="t-green">downloading Sneha_Lama_SWE.pdf...</span>');
+    return;
+  }
+
+  if (cmd === 'download resume cyber' || cmd === 'download resume-cyber') {
+    downloadResume('Sneha_Lama_Cyber.pdf');
+    printTerminal('<span class="t-green">downloading Sneha_Lama_Cyber.pdf...</span>');
+    return;
+  }
+
+  if (cmd === 'download resume' || cmd === 'open resume' || cmd === 'open resume.pdf') {
+    printTerminal('which version? <span class="t-blue">download resume swe</span>  |  <span class="t-blue">download resume cyber</span>');
+    return;
+  }
+
+  if (cmd.startsWith('cat ') || cmd.startsWith('open ')) {
+    const target = cmd.replace(/^(cat|open)\s+/, '').trim();
     const match = Object.keys(FILES).find(k =>
-      k.endsWith(target) || k.endsWith(target + '.md') || k.endsWith(target + '.json')
+      k === target ||
+      k.endsWith('/' + target) ||
+      k.endsWith(target + '.md') ||
+      k.endsWith(target + '.json')
     );
     if (match) {
       openFile(match);
       printTerminal(`<span class="t-green">opened ${match}</span>`);
     } else {
-      printTerminal(`<span class="t-error">file not found: ${esc(target)}</span>`);
+      printTerminal(`<span class="t-error">file not found: ${esc(target)}</span>  try <span class="t-blue">ls</span>`);
     }
     return;
   }
@@ -881,7 +954,7 @@ function runTerminalCommand(raw) {
   if (response) {
     printTerminal(response);
   } else {
-    printTerminal(`<span class="t-error">command not found: ${esc(cmd)}</span> - type <span class="t-blue">help</span>`);
+    printTerminal(`<span class="t-error">command not found: ${esc(cmd)}</span>. type <span class="t-blue">help</span>`);
   }
 }
 
@@ -968,6 +1041,11 @@ function initMobileSidebar() {
     btn.setAttribute('aria-expanded', open);
   });
 
+  const paletteBtn = $('mobile-palette-btn');
+  if (paletteBtn) {
+    paletteBtn.addEventListener('click', openPalette);
+  }
+
   // close via backdrop tap
   backdrop.addEventListener('click', closeMobileSidebar);
 
@@ -986,7 +1064,32 @@ function initMobileSidebar() {
   }, { passive: true });
 }
 
-/*  
+   VIRTUAL KEYBOARD — keep terminal input visible on mobile
+function initVirtualKeyboard() {
+  if (!window.visualViewport) return;
+
+  const panel = $('terminal-panel');
+  const statusH = parseInt(
+    getComputedStyle(document.documentElement).getPropertyValue('--statusbar-h')
+  ) || 22;
+
+  const reposition = () => {
+    if (panel.hidden || window.innerWidth > 768) {
+      panel.style.bottom = '';
+      return;
+    }
+    const kbOffset = window.innerHeight - window.visualViewport.offsetTop - window.visualViewport.height;
+    panel.style.bottom = Math.max(kbOffset, statusH) + 'px';
+  };
+
+  window.visualViewport.addEventListener('resize', reposition);
+  window.visualViewport.addEventListener('scroll', reposition);
+
+  $('terminal-input').addEventListener('blur', () => {
+    setTimeout(() => { if (panel) panel.style.bottom = ''; }, 150);
+  });
+}
+
    KEYBOARD SHORTCUTS
      */
 function initKeyboard() {
@@ -1186,7 +1289,126 @@ function initTerminalControls() {
   document.addEventListener('touchend', () => { dragging = false; });
 }
 
-/*  
+   MATRIX RAIN EASTER EGG
+function runMatrixRain() {
+  const existing = document.getElementById('matrix-canvas');
+  if (existing) return;
+
+  const canvas = document.createElement('canvas');
+  canvas.id = 'matrix-canvas';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  document.body.appendChild(canvas);
+
+  const ctx = canvas.getContext('2d');
+  const cols = Math.floor(canvas.width / 16);
+  const drops = Array(cols).fill(1);
+  const chars = 'アイウエオカキクケコサシスセソ0123456789ABCDEF<>{}[]()';
+
+  const frame = () => {
+    ctx.fillStyle = 'rgba(0,0,0,0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#0f0';
+    ctx.font = '14px monospace';
+    drops.forEach((y, i) => {
+      const ch = chars[Math.floor(Math.random() * chars.length)];
+      ctx.fillText(ch, i * 16, y * 16);
+      if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    });
+  };
+
+  const interval = setInterval(frame, 40);
+
+  setTimeout(() => {
+    clearInterval(interval);
+    canvas.classList.add('fading');
+    showToast('you found it. now hire me. 👾', 3000);
+    setTimeout(() => canvas.remove(), 900);
+  }, 5000);
+}
+
+   KONAMI CODE
+function initKonamiCode() {
+  const sequence = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+  let pos = 0;
+  document.addEventListener('keydown', (e) => {
+    if (e.key === sequence[pos]) {
+      pos++;
+      if (pos === sequence.length) {
+        pos = 0;
+        runMatrixRain();
+      }
+    } else {
+      pos = e.key === sequence[0] ? 1 : 0;
+    }
+  });
+}
+
+   TRAFFIC LIGHTS
+function initTrafficLights() {
+  document.querySelector('.tl-red')?.addEventListener('click', () => {
+    if (state.activeTabId) {
+      closeTab(state.activeTabId);
+      showToast('tab closed');
+    } else {
+      showToast('no tab to close');
+    }
+  });
+
+  document.querySelector('.tl-yellow')?.addEventListener('click', () => {
+    const sidebar = $('sidebar');
+    const activeBtn = document.querySelector('.ab-btn.active');
+    if (activeBtn) {
+      activeBtn.classList.remove('active');
+      sidebar.style.width = '0';
+      sidebar.style.minWidth = '0';
+      state.sidebarOpen = false;
+      showToast('sidebar minimized');
+    } else {
+      sidebar.style.width = '';
+      sidebar.style.minWidth = '';
+      state.sidebarOpen = true;
+      showPanel('explorer');
+      showToast('sidebar restored');
+    }
+  });
+
+  document.querySelector('.tl-green')?.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+      showToast('fullscreen. press Esc to exit');
+    } else {
+      document.exitFullscreen();
+    }
+  });
+}
+
+   TYPEWRITER EMPTY STATE
+function initTypewriterSubtitle() {
+  const el = document.querySelector('.empty-sub');
+  if (!el) return;
+
+  const lines = [
+    'Backend · Security · AI',
+    'Building things that ship',
+    'Open to work · Tampa, FL',
+    'python | fastapi | aws | docker',
+    'Backend · Security · AI',
+  ];
+  let idx = 0;
+
+  setInterval(() => {
+    if ($('editor-pane') && !$('editor-pane').hidden) return;
+    idx = (idx + 1) % lines.length;
+    el.classList.add('fading-out');
+    setTimeout(() => {
+      el.textContent = lines[idx];
+      el.classList.remove('fading-out');
+    }, 300);
+  }, 3200);
+}
+
    BOOT SEQUENCE
      */
 function boot() {
@@ -1240,6 +1462,10 @@ function init() {
   initTerminalControls();
   initResize();
   initMobileSidebar();
+  initVirtualKeyboard();
+  initKonamiCode();
+  initTrafficLights();
+  initTypewriterSubtitle();
 
   // open welcome.md on first visit (after boot)
   const hasOpenedWelcome = localStorage.getItem('openedWelcome');
@@ -1248,16 +1474,20 @@ function init() {
     setTimeout(() => openFile('welcome.md'), 100);
   }
 
-  // open terminal on load
-  setTimeout(() => toggleTerminal(true), 300);
+  // open terminal on load — desktop only (mobile: keyboard blocks half screen)
+  if (window.innerWidth > 768) {
+    setTimeout(() => toggleTerminal(true), 300);
+  }
 
   // sidebar hint for new visitors
   const hasSeenHint = localStorage.getItem('seenHint');
   if (!hasSeenHint) {
     localStorage.setItem('seenHint', '1');
-    setTimeout(() => {
-      showToast('Click any file on the left to open it, or press Ctrl+K', 4000);
-    }, 1600);
+    const isMobile = window.innerWidth <= 768;
+    const hint = isMobile
+      ? 'Tap ☰ to browse files or ⌕ to search'
+      : 'Click any file on the left to open it, or press Ctrl+K';
+    setTimeout(() => showToast(hint, 4000), 1600);
   }
 }
 

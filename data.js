@@ -8,12 +8,12 @@ const FILES = {
 
 Hey, glad you're here.
 
-This site looks like VS Code - the text editor most developers live in. You don't need to know that to get around. Here's all you need:
+This site is built to look like VS Code, the editor most developers spend their lives in. You do not need to know that to find your way around. Here is all you need:
 
 - Click any file on the **left sidebar** to open it
 - Press **Ctrl+K** (or the search icon) to jump anywhere fast
 - Click the **×** on a tab to close it
-- Press **Ctrl+\`** to open a terminal if you're curious
+- Press **Ctrl+\`** to open a terminal if you are curious
 
 ## Quick links
 
@@ -23,7 +23,7 @@ This site looks like VS Code - the text editor most developers live in. You don'
 | \`projects/\` | Four real projects with context and impact |
 | \`skills.json\` | Languages, tools, and certifications |
 | \`experience.md\` | Work history and education |
-| \`resume/\` | Two versions - SWE and Cyber (view inline, download button included) |
+| \`resume/\` | Two versions, SWE and Cyber. View inline or download |
 | \`contact.md\` | How to reach me |
 
 ---
@@ -34,7 +34,7 @@ This site looks like VS Code - the text editor most developers live in. You don'
 
 ## Hi, I'm Sneha
 
-I study Computer Science at the University of South Florida (Dean's List 2025 - 4.0 GPA). I honestlyy lovveee learning about how systems work from the inside. I like to take things apart, follow the logic step by step, and then build something better. That curiosity pulled me toward backend development, security engineering, and AI.
+I study Computer Science at the University of South Florida (Dean's List 2025, 4.0 GPA). I honestly love learning about how systems work from the inside. I like to take things apart, follow the logic step by step, and then build something better. That curiosity pulled me toward backend development, security engineering, and AI.
 
 ## How I think about problems
 
@@ -140,30 +140,36 @@ Containerized and deployed to AWS ECS via CI/CD pipelines. Real-time inference t
 
 ## AI Wellbeing Companion
 
-A conversational assistant built to respond to stress and anxiety messages through a real-time chat interface.
+A conversational assistant that responds to stress and anxiety through a real time chat interface with a structured reasoning pipeline. Built to feel like talking to a thoughtful person, not a FAQ bot.
 
-**The problem.** People dealing with stress often want to talk it through, but don't always have someone available. Most chatbots give robotic, generic responses that feel dismissive.
+**The problem.** Most chatbots give generic, pattern-matched responses to emotional messages. They don't listen. They just categorize and reply. People can tell. The result is a tool that feels dismissive exactly when someone needs it least.
 
-**What it does.**
+**What I built.**
 
-- Real-time chat interface for stress and anxiety messages
-- 5-stage reasoning framework guiding how each response is structured
-- Designed to feel like talking to a thoughtful person, not a FAQ bot
-- 50% improvement in response clarity and conversational flow
+- Designed a 5-stage reasoning framework that guides every response: acknowledge -> validate -> reframe -> suggest -> follow up
+- Built the full backend in Python with an LLM API integration tuned to stay in the reasoning framework
+- Real-time chat interface with message history and typing indicators
+- Evaluated response quality manually across 50+ test conversations, iterating on prompt design until output felt consistently natural
+- 50% improvement in response clarity and conversational coherence compared to baseline LLM output
 
 ## Tech stack
 
 \`\`\`json
 {
-  "backend": ["Python"],
-  "ai": ["LLM APIs", "Structured reasoning pipeline"],
-  "interface": "Real-time chat UI"
+  "backend": ["Python", "FastAPI"],
+  "ai": ["LLM APIs", "Structured prompt engineering"],
+  "interface": ["Real-time chat UI", "WebSockets"],
+  "evaluation": "Manual red-teaming across 50+ conversations"
 }
 \`\`\`
 
-## Impact
+## What I learned
 
-50% improvement in response clarity through the structured 5-stage reasoning framework. Focused on practical usefulness over novelty.
+Prompt engineering at this level is more engineering than prompting. The 5 stage framework took about a dozen iterations to feel right. Each stage needed its own constraints to prevent the model from skipping ahead or collapsing into generic advice. The biggest insight: **constraints on output structure matter more than instructions about tone.**
+
+## Links
+
+- GitHub: [github.com/typicaleoxx](https://github.com/typicaleoxx) *(private repo, available on request)*
 
 **Status:** Completed`,
 
@@ -173,7 +179,7 @@ A conversational assistant built to respond to stress and anxiety messages throu
 
 A Chrome extension that automates repetitive incident documentation for Security Operations Center analysts.
 
-**The problem.** SOC analysts spend a chunk of every shift copy-pasting the same information into incident tickets. It's manual, error-prone, and draining during high-alert periods.
+**The problem.** SOC analysts spend a chunk of every shift copy-pasting the same information into incident tickets. It is manual, error prone, and draining during high alert periods.
 
 **What it does.**
 
@@ -315,7 +321,7 @@ High School Diploma (A+)
 
 ## Let's talk
 
-I'm open to software engineering, backend engineering, security engineering, and AI engineering roles.
+I'm open to software engineering, backend engineering, security engineering, and AI engineering roles. Internships or full time.
 
 | | |
 |--|--|
@@ -328,11 +334,87 @@ I'm open to software engineering, backend engineering, security engineering, and
 ## Send a message
 
 <contact-form></contact-form>`,
+
+  'now.md': `# now.md
+
+*A snapshot of what I'm focused on right now. Last updated May 2026.*
+
+---
+
+## Currently
+
+**Role:** Security Analyst at Cyber Florida, Tampa FL
+
+**Building:** Automation tooling for SOC workflows. Extending the Chrome extension into a broader incident management layer.
+
+**Learning:** Distributed systems design, container orchestration (Kubernetes), LLM fine-tuning on domain-specific data.
+
+**Reading:** *Designing Data-Intensive Applications* by Kleppmann.
+
+**Thinking about:** How AI can make security analysts faster without replacing the human judgment that matters.
+
+---
+
+## What's next
+
+Looking for full time or internship roles starting **Summer / Fall 2026** in:
+- Backend engineering (Python, FastAPI, cloud-native)
+- Security engineering / automation
+- AI tooling and applied ML
+
+If something you're working on sounds like a fit, reach out: [lsneha991@gmail.com](mailto:lsneha991@gmail.com)
+
+---
+
+*Inspired by [nownownow.com](https://nownownow.com/about)*`,
+
+  'CHANGELOG.md': `# CHANGELOG.md
+
+A running log of portfolio improvements. Because shipping is a habit.
+
+---
+
+## v2.2 (May 2026)
+- Added multiple VS Code color themes (Monokai, Dracula, Nord)
+- Added syntax highlighting for all code blocks via highlight.js
+- Copy-to-clipboard button on every code block
+- Word count + read time in status bar
+- Expanded terminal with 12 new commands including \`neofetch\`
+- Konami code easter egg
+- now.md — what I'm working on right now
+- Traffic lights are now interactive
+
+## v2.1 (May 2026)
+- Full mobile responsive overhaul
+- Sidebar converts to swipeable drawer on mobile
+- Terminal does not auto-open on mobile (keyboard bloat)
+- Command palette goes near-fullscreen on phones
+- Virtual keyboard handler keeps terminal input visible
+- Safe-area insets for notched iPhones
+- iOS font-size: 16px on inputs (prevents auto-zoom)
+- Fixed invisible backdrop blocking all taps
+
+## v2.0 (April 2026)
+- Complete rebuild in vanilla HTML/CSS/JS
+- VS Code-inspired layout with working file explorer
+- Interactive terminal with command history
+- Command palette with fuzzy search
+- Minimap with scroll sync
+- Sidebar resize handle
+- Activity bar with skills panel
+- Problems panel easter egg
+- Boot screen animation on first visit
+- Dark/light theme with localStorage persistence
+- Two tailored resumes (SWE + Cyber)
+
+## v1.0 (2025)
+- Initial portfolio. It was fine.`,
 };
 
 const TREE = [
   { type: 'file', name: 'welcome.md' },
   { type: 'file', name: 'about-me.md' },
+  { type: 'file', name: 'now.md' },
   {
     type: 'folder', name: 'projects', open: false,
     children: [
@@ -352,26 +434,33 @@ const TREE = [
       { type: 'file', name: 'Sneha_Lama_Cyber.pdf' },
     ],
   },
+  { type: 'file', name: 'CHANGELOG.md' },
 ];
 
 const COMMANDS = [
-  { id: 'about',      label: 'Open About Me',           icon: 'file-md',  action: () => openFile('about-me.md') },
-  { id: 'projects',   label: 'View Projects',            icon: 'folder',   action: () => { expandFolder('projects'); openFile('projects/syllabAI.md'); } },
-  { id: 'syllab',     label: 'syllabAI',                 icon: 'file-md',  action: () => openFile('projects/syllabAI.md') },
-  { id: 'codeexp',    label: 'AI Code Explainer',        icon: 'file-md',  action: () => openFile('projects/ai-code-explainer.md') },
-  { id: 'wellbeing',  label: 'AI Wellbeing Companion',   icon: 'file-md',  action: () => openFile('projects/ai-wellbeing-companion.md') },
-  { id: 'socmacro',   label: 'SOC Macro Extension',      icon: 'file-md',  action: () => openFile('projects/soc-macro-extension.md') },
-  { id: 'skills',     label: 'View Skills',              icon: 'file-json',action: () => openFile('skills.json') },
-  { id: 'experience', label: 'Open Experience',          icon: 'file-md',  action: () => openFile('experience.md') },
-  { id: 'contact',    label: 'Contact Me',               icon: 'file-md',  action: () => openFile('contact.md') },
-  { id: 'resume-swe',   label: 'Open Resume (SWE)',    icon: 'file-pdf', action: () => openFile('resume/Sneha_Lama_SWE.pdf') },
-  { id: 'resume-cyber', label: 'Open Resume (Cyber)',  icon: 'file-pdf', action: () => openFile('resume/Sneha_Lama_Cyber.pdf') },
-  { id: 'github',     label: 'Open GitHub',              icon: 'external', action: () => window.open('https://github.com/typicaleoxx', '_blank') },
-  { id: 'linkedin',   label: 'Open LinkedIn',            icon: 'external', action: () => window.open('https://www.linkedin.com/in/snehalama', '_blank') },
-  { id: 'theme',      label: 'Toggle Theme',             icon: 'theme',    action: () => toggleTheme() },
-  { id: 'terminal',   label: 'Open Terminal',            icon: 'terminal', action: () => toggleTerminal(true) },
-  { id: 'cleartabs',  label: 'Close All Tabs',           icon: 'close',    action: () => closeAllTabs() },
-  { id: 'welcome',    label: 'Open Welcome',             icon: 'file-md',  action: () => openFile('welcome.md') },
+  { id: 'about',        label: 'Open About Me',            icon: 'file-md',  action: () => openFile('about-me.md') },
+  { id: 'now',          label: 'What I\'m Doing Now',      icon: 'file-md',  action: () => openFile('now.md') },
+  { id: 'projects',     label: 'View Projects',            icon: 'folder',   action: () => { expandFolder('projects'); openFile('projects/syllabAI.md'); } },
+  { id: 'syllab',       label: 'syllabAI',                 icon: 'file-md',  action: () => openFile('projects/syllabAI.md') },
+  { id: 'codeexp',      label: 'AI Code Explainer',        icon: 'file-md',  action: () => openFile('projects/ai-code-explainer.md') },
+  { id: 'wellbeing',    label: 'AI Wellbeing Companion',   icon: 'file-md',  action: () => openFile('projects/ai-wellbeing-companion.md') },
+  { id: 'socmacro',     label: 'SOC Macro Extension',      icon: 'file-md',  action: () => openFile('projects/soc-macro-extension.md') },
+  { id: 'skills',       label: 'View Skills',              icon: 'file-json',action: () => openFile('skills.json') },
+  { id: 'experience',   label: 'Open Experience',          icon: 'file-md',  action: () => openFile('experience.md') },
+  { id: 'contact',      label: 'Contact Me',               icon: 'file-md',  action: () => openFile('contact.md') },
+  { id: 'changelog',    label: 'View Changelog',           icon: 'file-md',  action: () => openFile('CHANGELOG.md') },
+  { id: 'resume-swe',   label: 'Open Resume (SWE)',        icon: 'file-pdf', action: () => openFile('resume/Sneha_Lama_SWE.pdf') },
+  { id: 'resume-cyber', label: 'Open Resume (Cyber)',      icon: 'file-pdf', action: () => openFile('resume/Sneha_Lama_Cyber.pdf') },
+  { id: 'github',       label: 'Open GitHub',              icon: 'external', action: () => window.open('https://github.com/typicaleoxx', '_blank') },
+  { id: 'linkedin',     label: 'Open LinkedIn',            icon: 'external', action: () => window.open('https://www.linkedin.com/in/snehalama', '_blank') },
+  { id: 'theme-dark',   label: 'Theme: Dark (One Dark Pro)',  icon: 'theme', action: () => applyTheme('dark') },
+  { id: 'theme-light',  label: 'Theme: Light (GitHub)',       icon: 'theme', action: () => applyTheme('light') },
+  { id: 'theme-monokai',label: 'Theme: Monokai',              icon: 'theme', action: () => applyTheme('monokai') },
+  { id: 'theme-dracula',label: 'Theme: Dracula',              icon: 'theme', action: () => applyTheme('dracula') },
+  { id: 'theme-nord',   label: 'Theme: Nord',                 icon: 'theme', action: () => applyTheme('nord') },
+  { id: 'terminal',     label: 'Open Terminal',            icon: 'terminal', action: () => toggleTerminal(true) },
+  { id: 'cleartabs',    label: 'Close All Tabs',           icon: 'close',    action: () => closeAllTabs() },
+  { id: 'welcome',      label: 'Open Welcome',             icon: 'file-md',  action: () => openFile('welcome.md') },
 ];
 
 const TERMINAL_RESPONSES = {
@@ -404,17 +493,77 @@ building backend systems, security automation, and ai tools
 <span class="t-yellow">linkedin:</span> linkedin.com/in/snehalama`,
 
   help: `<span class="t-green">available commands:</span>
-  <span class="t-blue">whoami</span>          who is sneha
-  <span class="t-blue">ls</span>              list files
-  <span class="t-blue">ls projects</span>     list all projects
-  <span class="t-blue">open &lt;file&gt;</span>     open a file in the editor
-  <span class="t-blue">open resume</span>     download resume.pdf
-  <span class="t-blue">skills</span>          print skills summary
-  <span class="t-blue">contact</span>         print contact info
-  <span class="t-blue">clear</span>           clear terminal
-  <span class="t-blue">git log</span>         ...
-  <span class="t-blue">git status</span>      ...
-  <span class="t-blue">git blame</span>       ...`,
+  <span class="t-blue">whoami</span>                  who is sneha
+  <span class="t-blue">now</span>                     what i'm working on right now
+  <span class="t-blue">ls</span>                      list files
+  <span class="t-blue">ls projects</span>             list all projects
+  <span class="t-blue">cat &lt;file&gt;</span>              open a file in the editor
+  <span class="t-blue">open &lt;file&gt;</span>             same as cat
+  <span class="t-blue">stats</span>                   portfolio at a glance
+  <span class="t-blue">skills</span>                  print skills summary
+  <span class="t-blue">links</span>                   all links in one place
+  <span class="t-blue">contact</span>                 print contact info
+  <span class="t-blue">download resume swe</span>     download SWE resume
+  <span class="t-blue">download resume cyber</span>   download Cyber resume
+  <span class="t-blue">neofetch</span>               system info (try it)
+  <span class="t-blue">banner</span>                  ASCII art
+  <span class="t-blue">date</span>                    current date & time
+  <span class="t-blue">echo &lt;text&gt;</span>             echo text back
+  <span class="t-blue">history</span>                 command history
+  <span class="t-blue">uname -a</span>               system info
+  <span class="t-blue">clear</span>                   clear terminal
+  <span class="t-blue">git log</span>                 ...
+  <span class="t-blue">git status</span>              ...
+  <span class="t-blue">git blame</span>               ...`,
+
+  now: `<span class="t-green">sneha@portfolio ~ now</span>
+<span class="t-yellow">role:</span>      Security Analyst · Cyber Florida · Tampa FL
+<span class="t-yellow">building:</span>  SOC automation tooling, extending the Chrome extension
+<span class="t-yellow">learning:</span>  Distributed systems · Kubernetes · LLM fine-tuning
+<span class="t-yellow">reading:</span>   Designing Data-Intensive Applications by Kleppmann
+<span class="t-yellow">status:</span>    <span class="t-green">open to work</span> · backend · security · AI roles
+<span class="t-yellow">updated:</span>   May 2026`,
+
+  stats: `<span class="t-green">sneha@portfolio ~ stats</span>
+<span class="t-yellow">projects:</span>     4 deployed  (syllabAI · code-explainer · wellbeing · soc-macro)
+<span class="t-yellow">languages:</span>    6           (Python · JavaScript · Java · C · C++ · SQL)
+<span class="t-yellow">frameworks:</span>   5           (FastAPI · Django · Next.js · Streamlit · DRF)
+<span class="t-yellow">certifications:</span> 3         (BTL1 · SANS ICS410 · SANS ICS310)
+<span class="t-yellow">resumes:</span>      2           (SWE + Cyber, type <span class="t-blue">download resume swe</span>)
+<span class="t-yellow">gpa:</span>          3.72        (Dean's List 2025 · USF)
+<span class="t-yellow">alerts investigated:</span> 100+
+<span class="t-yellow">reporting time saved:</span> 25%`,
+
+  links: `<span class="t-green">sneha@portfolio ~ links</span>
+<span class="t-yellow">email:</span>    <span class="t-blue">lsneha991@gmail.com</span>
+<span class="t-yellow">github:</span>   <span class="t-blue">github.com/typicaleoxx</span>
+<span class="t-yellow">linkedin:</span> <span class="t-blue">linkedin.com/in/snehalama</span>
+<span class="t-yellow">live:</span>     <span class="t-blue">sneha-lama.github.io</span>`,
+
+  neofetch: `
+<span class="t-green">        *    .  *  </span>      <span class="t-green">sneha</span><span class="t-muted">@</span><span class="t-blue">portfolio</span>
+<span class="t-green">    .  * .  .  .  . </span>     <span class="t-muted">─────────────────────</span>
+<span class="t-green">  .  .  .  .  .  .  </span>     <span class="t-yellow">OS:</span>      SnehaOS 2.2 portfolio-lts
+<span class="t-green"> .  .  .  .  .  .  . </span>    <span class="t-yellow">Shell:</span>   bash (portfolio edition)
+<span class="t-green">  .  .  .  .  .  .  </span>     <span class="t-yellow">Editor:</span>  VS Code (obviously)
+<span class="t-green">    .  * .  .  .    </span>     <span class="t-yellow">Lang:</span>    Python · JavaScript · Java · C
+<span class="t-green">        *    .  *  </span>      <span class="t-yellow">Certs:</span>   BTL1 · SANS ICS410 · ICS310
+                           <span class="t-yellow">Status:</span>  <span class="t-green">● open to work</span>
+                           <span class="t-yellow">Email:</span>   lsneha991@gmail.com
+`,
+
+  banner: `
+<span class="t-green"> ____  _  _ ___ _  _ __   _</span>
+<span class="t-green">/ ___|| \\| | __| || |\\ \\ / /</span>
+<span class="t-green">\\___  | .  | _|| __ | \\ V / </span>
+<span class="t-green"> ___/ |_|\\_|___|_||_|  |_|  </span>
+<span class="t-muted">backend · security · ai · open to work</span>`,
+
+  date: `<span class="t-green">${new Date().toDateString()} ${new Date().toLocaleTimeString()}</span>`,
+
+  'uname -a': `SnehaOS 2.2.0-portfolio-lts #1 SMP PREEMPT_DYNAMIC
+Machine: sneha-lama.github.io  Arch: brain  Shell: bash
+Uptime: since April 2026  Status: <span class="t-green">running smoothly</span>`,
 
   'git log': `<span class="t-yellow">commit a1b2c3d</span> <span class="t-muted">(HEAD -> main, origin/main)</span>
 Author: Sneha Lama &lt;lsneha991@gmail.com&gt;
